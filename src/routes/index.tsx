@@ -15,11 +15,11 @@ export const Route = createFileRoute("/")({
         content:
           "Planner de estudos do curso de Product Management: módulos e aulas atualizadas, marcação de concluído, anotações e lista de tarefas.",
       },
-      { property: "og:title", content: "Planner de Estudos de Produto" },
+      { property: "og:title", content: "Planner de Estudos CPM 2025 | Cronograma por Módulos" },
       {
         property: "og:description",
         content:
-          "Acompanhe módulos e aulas do curso de Product Management, marque o que concluiu e organize suas tarefas de estudo.",
+          "Planner de estudos do curso de Product Management: módulos e aulas atualizadas, marcação de concluído, anotações e lista de tarefas.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

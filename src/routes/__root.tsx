@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Planner de Estudos CPM 2025 | Cronograma por Módulos" },
+      { name: "description", content: "Planner de estudos do curso de Product Management: módulos e aulas atualizadas, marcação de concluído, anotações e lista de tarefas." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Planner de Estudos CPM 2025 | Cronograma por Módulos" },
+      { property: "og:description", content: "Planner de estudos do curso de Product Management: módulos e aulas atualizadas, marcação de concluído, anotações e lista de tarefas." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Planner de Estudos CPM 2025 | Cronograma por Módulos" },
+      { name: "twitter:description", content: "Planner de estudos do curso de Product Management: módulos e aulas atualizadas, marcação de concluído, anotações e lista de tarefas." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/93e4fc7a-c51c-49e8-b3b4-7b106a4d5c41/id-preview-1ceca6ee--dc1a7fd1-25bb-40f1-acc3-9c9f3c6073de.lovable.app-1786048490449.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/93e4fc7a-c51c-49e8-b3b4-7b106a4d5c41/id-preview-1ceca6ee--dc1a7fd1-25bb-40f1-acc3-9c9f3c6073de.lovable.app-1786048490449.png" },
     ],
     links: [
       {
