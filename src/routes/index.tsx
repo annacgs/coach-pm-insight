@@ -95,11 +95,15 @@ function Planner() {
   const [noteFor, setNoteFor] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [onlyPending, setOnlyPending] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState(false);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = localStorage.getItem(KEY) ?? localStorage.getItem("pm-course-planner-v2");
       if (raw) setSt((p) => ({ ...p, ...JSON.parse(raw) }));
+      const at = localStorage.getItem(KEY + ":at");
+      if (at) setSavedAt(at);
     } catch {
       /* ignore */
     }
@@ -107,8 +111,59 @@ function Planner() {
   }, []);
 
   useEffect(() => {
-    if (loaded) localStorage.setItem(KEY, JSON.stringify(st));
+    if (!loaded) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(st));
+      const at = new Date().toISOString();
+      localStorage.setItem(KEY + ":at", at);
+      setSavedAt(at);
+      setSaveError(false);
+    } catch {
+      setSaveError(true);
+    }
   }, [st, loaded]);
+
+  // salva também ao fechar/atualizar a aba
+  useEffect(() => {
+    if (!loaded) return;
+    const flush = () => {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(st));
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener("beforeunload", flush);
+    document.addEventListener("visibilitychange", flush);
+    return () => {
+      window.removeEventListener("beforeunload", flush);
+      document.removeEventListener("visibilitychange", flush);
+    };
+  }, [st, loaded]);
+
+  const exportData = () => {
+    const blob = new Blob([JSON.stringify(st, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `planner-produto-${today()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importData = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(String(reader.result));
+        setSt((p) => ({ ...p, ...data }));
+      } catch {
+        alert("Arquivo inválido.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
 
   const statusOf = (id: string): LessonStatus => st.status[id] ?? "pendente";
   const cycle = (id: string) =>
@@ -485,10 +540,45 @@ function Planner() {
           </ul>
         </section>
 
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Conteúdo baseado na planilha oficial do curso. Tudo salva automaticamente neste
-          navegador.
-        </p>
+        <section className="mt-8 rounded-xl border border-border bg-card p-4">
+          <h2 className="text-base font-semibold text-card-foreground">
+            Salvamento e backup
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {saveError
+              ? "Não foi possível salvar neste navegador (armazenamento bloqueado ou cheio)."
+              : savedAt
+                ? `Progresso salvo neste navegador · último salvamento: ${new Date(savedAt).toLocaleString("pt-BR")}`
+                : "Progresso salvo automaticamente neste navegador."}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              onClick={exportData}
+              className="rounded-md border border-input px-3 py-2 text-xs font-medium text-foreground hover:bg-accent"
+            >
+              Exportar backup (.json)
+            </button>
+            <label className="cursor-pointer rounded-md border border-input px-3 py-2 text-xs font-medium text-foreground hover:bg-accent">
+              Importar backup
+              <input
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) importData(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            Os dados ficam apenas neste navegador. Se limpar o histórico/dados do site ou usar
+            aba anônima, o progresso é perdido — por isso vale exportar um backup de vez em
+            quando.
+          </p>
+        </section>
+
       </div>
     </main>
   );
