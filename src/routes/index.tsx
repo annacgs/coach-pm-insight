@@ -540,10 +540,45 @@ function Planner() {
           </ul>
         </section>
 
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Conteúdo baseado na planilha oficial do curso. Tudo salva automaticamente neste
-          navegador.
-        </p>
+        <section className="mt-8 rounded-xl border border-border bg-card p-4">
+          <h2 className="text-base font-semibold text-card-foreground">
+            Salvamento e backup
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {saveError
+              ? "Não foi possível salvar neste navegador (armazenamento bloqueado ou cheio)."
+              : savedAt
+                ? `Progresso salvo neste navegador · último salvamento: ${new Date(savedAt).toLocaleString("pt-BR")}`
+                : "Progresso salvo automaticamente neste navegador."}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              onClick={exportData}
+              className="rounded-md border border-input px-3 py-2 text-xs font-medium text-foreground hover:bg-accent"
+            >
+              Exportar backup (.json)
+            </button>
+            <label className="cursor-pointer rounded-md border border-input px-3 py-2 text-xs font-medium text-foreground hover:bg-accent">
+              Importar backup
+              <input
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) importData(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            Os dados ficam apenas neste navegador. Se limpar o histórico/dados do site ou usar
+            aba anônima, o progresso é perdido — por isso vale exportar um backup de vez em
+            quando.
+          </p>
+        </section>
+
       </div>
     </main>
   );
